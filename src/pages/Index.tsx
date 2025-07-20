@@ -4,8 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Navigation } from "@/components/layout/Navigation";
 import { CustomerDashboard } from "@/components/dashboard/CustomerDashboard";
 import AuthPage from "./Auth";
-import { setupAdminAndSampleData } from "@/utils/setup-admin";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
@@ -14,7 +12,6 @@ const Index = () => {
   const [userProfile, setUserProfile] = useState<any>(null);
   const [currentView, setCurrentView] = useState("dashboard");
   const [loading, setLoading] = useState(true);
-  const [setupLoading, setSetupLoading] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -72,25 +69,6 @@ const Index = () => {
 
   const handleNavigate = (view: string) => {
     setCurrentView(view);
-  };
-
-  const handleSetupAdmin = async () => {
-    setSetupLoading(true);
-    try {
-      await setupAdminAndSampleData();
-      toast({
-        title: "Setup Complete",
-        description: "Admin user and sample data have been created successfully!"
-      });
-    } catch (error: any) {
-      toast({
-        title: "Setup Error",
-        description: error.message,
-        variant: "destructive"
-      });
-    } finally {
-      setSetupLoading(false);
-    }
   };
 
   if (loading) {

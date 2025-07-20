@@ -68,6 +68,28 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
           description: "Account created successfully! Please check your email to confirm your account."
         });
       } else {
+        // Check if trying to login as admin and create admin if doesn't exist
+        if (emailFormData.email === "admin@ecorider.com" && emailFormData.password === "admin1234") {
+          // Try to create admin user first
+          const { error: signUpError } = await supabase.auth.signUp({
+            email: emailFormData.email,
+            password: emailFormData.password,
+            options: {
+              emailRedirectTo: `${window.location.origin}/`,
+              data: {
+                first_name: 'System',
+                last_name: 'Administrator',
+                role: 'admin'
+              }
+            }
+          });
+
+          // If user already exists, that's fine, just sign them in
+          if (signUpError && !signUpError.message.includes("already registered")) {
+            throw signUpError;
+          }
+        }
+
         const { error } = await supabase.auth.signInWithPassword({
           email: emailFormData.email,
           password: emailFormData.password
@@ -158,6 +180,25 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
   const handleAdminLogin = async () => {
     setLoading(true);
     try {
+      // Try to create admin user first
+      const { error: signUpError } = await supabase.auth.signUp({
+        email: "admin@ecorider.com",
+        password: "admin1234",
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+          data: {
+            first_name: 'System',
+            last_name: 'Administrator',
+            role: 'admin'
+          }
+        }
+      });
+
+      // If user already exists, that's fine, just sign them in
+      if (signUpError && !signUpError.message.includes("already registered")) {
+        throw signUpError;
+      }
+
       const { error } = await supabase.auth.signInWithPassword({
         email: "admin@ecorider.com",
         password: "admin1234"
