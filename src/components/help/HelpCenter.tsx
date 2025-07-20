@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, HelpCircle, ChevronRight, Search } from "lucide-react";
+import { ArrowLeft, HelpCircle, ChevronRight, Search, ThumbsUp, ThumbsDown } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,12 +19,18 @@ interface QAPair {
   category: string | null;
 }
 
+interface QAFeedback {
+  qaId: string;
+  satisfied: boolean;
+}
+
 export function HelpCenter({ onBack }: HelpCenterProps) {
   const [qaPairs, setQAPairs] = useState<QAPair[]>([]);
   const [filteredQAs, setFilteredQAs] = useState<QAPair[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [feedback, setFeedback] = useState<QAFeedback[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -99,6 +105,29 @@ export function HelpCenter({ onBack }: HelpCenterProps) {
     });
 
     return { categorized, uncategorized, categories };
+  };
+
+  const handleFeedback = (qaId: string, satisfied: boolean) => {
+    setFeedback(prev => {
+      const existingIndex = prev.findIndex(f => f.qaId === qaId);
+      if (existingIndex >= 0) {
+        const updated = [...prev];
+        updated[existingIndex] = { qaId, satisfied };
+        return updated;
+      } else {
+        return [...prev, { qaId, satisfied }];
+      }
+    });
+
+    toast({
+      title: "Thank you!",
+      description: satisfied ? "We're glad this helped!" : "We'll work to improve this answer."
+    });
+  };
+
+  const getFeedbackForQA = (qaId: string): boolean | null => {
+    const qaFeedback = feedback.find(f => f.qaId === qaId);
+    return qaFeedback ? qaFeedback.satisfied : null;
   };
 
   if (loading) {
@@ -238,6 +267,27 @@ export function HelpCenter({ onBack }: HelpCenterProps) {
                               </p>
                             ))}
                           </div>
+                          <div className="mt-4 pt-4 border-t">
+                            <p className="text-sm text-muted-foreground mb-2">Was this helpful?</p>
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant={getFeedbackForQA(qa.id) === true ? "default" : "outline"}
+                                onClick={() => handleFeedback(qa.id, true)}
+                              >
+                                <ThumbsUp className="h-4 w-4 mr-1" />
+                                Yes
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant={getFeedbackForQA(qa.id) === false ? "destructive" : "outline"}
+                                onClick={() => handleFeedback(qa.id, false)}
+                              >
+                                <ThumbsDown className="h-4 w-4 mr-1" />
+                                No
+                              </Button>
+                            </div>
+                          </div>
                         </div>
                       </AccordionContent>
                     </AccordionItem>
@@ -274,6 +324,27 @@ export function HelpCenter({ onBack }: HelpCenterProps) {
                                 {paragraph}
                               </p>
                             ))}
+                          </div>
+                          <div className="mt-4 pt-4 border-t">
+                            <p className="text-sm text-muted-foreground mb-2">Was this helpful?</p>
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant={getFeedbackForQA(qa.id) === true ? "default" : "outline"}
+                                onClick={() => handleFeedback(qa.id, true)}
+                              >
+                                <ThumbsUp className="h-4 w-4 mr-1" />
+                                Yes
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant={getFeedbackForQA(qa.id) === false ? "destructive" : "outline"}
+                                onClick={() => handleFeedback(qa.id, false)}
+                              >
+                                <ThumbsDown className="h-4 w-4 mr-1" />
+                                No
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       </AccordionContent>

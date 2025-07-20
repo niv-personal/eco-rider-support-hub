@@ -8,6 +8,8 @@ import { AddQAComponent } from "@/components/admin/AddQAComponent";
 import { ManageQAComponent } from "@/components/admin/ManageQAComponent";
 import { HelpCenter } from "@/components/help/HelpCenter";
 import { ChatInterface } from "@/components/chat/ChatInterface";
+import { SubmitQueryComponent } from "@/components/queries/SubmitQueryComponent";
+import { ViewQueriesComponent } from "@/components/queries/ViewQueriesComponent";
 import AuthPage from "./Auth";
 import { useToast } from "@/hooks/use-toast";
 
@@ -188,6 +190,21 @@ const Index = () => {
             <h2 className="text-2xl font-bold mb-4">My Orders</h2>
             <p className="text-muted-foreground">Orders view coming soon...</p>
           </div>
+        )}
+        
+        {currentView === 'submit-query' && (
+          <SubmitQueryComponent 
+            user={user} 
+            onBack={() => setCurrentView('queries')} 
+          />
+        )}
+        
+        {currentView === 'queries' && (
+          <ViewQueriesComponent 
+            user={user} 
+            onBack={() => setCurrentView('dashboard')}
+            onSubmitNew={() => setCurrentView('submit-query')}
+          />
         )}
         
         {currentView === 'admin' && (

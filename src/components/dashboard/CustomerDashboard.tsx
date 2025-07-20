@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { MessageCircle, Package, Clock, CheckCircle, HelpCircle, Zap } from "lucide-react";
+import { MessageCircle, Package, Clock, CheckCircle, HelpCircle, Zap, FileText } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -142,7 +142,7 @@ export function CustomerDashboard({ user, userProfile, onNavigate }: CustomerDas
       </div>
 
       {/* Quick Actions */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => onNavigate('chat')}>
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
@@ -180,6 +180,20 @@ export function CustomerDashboard({ user, userProfile, onNavigate }: CustomerDas
               <div>
                 <h3 className="font-semibold">Quick Help</h3>
                 <p className="text-sm text-muted-foreground">Common questions</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => onNavigate('queries')}>
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-4">
+              <div className="p-3 bg-orange-100 rounded-lg">
+                <FileText className="h-6 w-6 text-orange-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold">My Queries</h3>
+                <p className="text-sm text-muted-foreground">{queries.length} support requests</p>
               </div>
             </div>
           </CardContent>
@@ -262,7 +276,7 @@ export function CustomerDashboard({ user, userProfile, onNavigate }: CustomerDas
             <Button 
               variant="outline" 
               className="w-full mt-4"
-              onClick={() => onNavigate('chat')}
+              onClick={() => onNavigate('queries')}
             >
               View All Queries
             </Button>

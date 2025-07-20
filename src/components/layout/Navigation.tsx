@@ -1,4 +1,4 @@
-import { User, LogOut, MessageCircle, Package, Settings, HelpCircle } from "lucide-react";
+import { User, LogOut, MessageCircle, Package, Settings, HelpCircle, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -128,10 +128,17 @@ export function Navigation({ user, userProfile, onNavigate }: NavigationProps) {
                 </DropdownMenuItem>
                 
                 {!isAdmin && (
-                  <DropdownMenuItem onClick={() => onNavigate('orders')}>
-                    <Package className="mr-2 h-4 w-4" />
-                    <span>My Orders</span>
-                  </DropdownMenuItem>
+                  <>
+                    <DropdownMenuItem onClick={() => onNavigate('orders')}>
+                      <Package className="mr-2 h-4 w-4" />
+                      <span>My Orders</span>
+                    </DropdownMenuItem>
+                    
+                    <DropdownMenuItem onClick={() => onNavigate('queries')}>
+                      <FileText className="mr-2 h-4 w-4" />
+                      <span>My Queries</span>
+                    </DropdownMenuItem>
+                  </>
                 )}
                 
                 {isAdmin && (
