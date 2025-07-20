@@ -5,6 +5,7 @@ import { Navigation } from "@/components/layout/Navigation";
 import { CustomerDashboard } from "@/components/dashboard/CustomerDashboard";
 import { AdminDashboard } from "@/components/dashboard/AdminDashboard";
 import { AddQAComponent } from "@/components/admin/AddQAComponent";
+import { HelpCenter } from "@/components/help/HelpCenter";
 import AuthPage from "./Auth";
 import { useToast } from "@/hooks/use-toast";
 
@@ -188,10 +189,7 @@ const Index = () => {
         )}
         
         {currentView === 'help' && (
-          <div className="text-center py-12">
-            <h2 className="text-2xl font-bold mb-4">Help Center</h2>
-            <p className="text-muted-foreground">Help center coming soon...</p>
-          </div>
+          <HelpCenter onBack={() => setCurrentView('dashboard')} />
         )}
       </main>
     </div>
