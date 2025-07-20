@@ -4,15 +4,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Smartphone, Mail, Lock, User, Phone } from "lucide-react";
+import { ArrowLeft, Smartphone, Mail, Phone, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-interface AuthFormProps {
+interface CustomerLoginProps {
   onSuccess: () => void;
+  onBack: () => void;
 }
 
-export function AuthForm({ onSuccess }: AuthFormProps) {
+export function CustomerLogin({ onSuccess, onBack }: CustomerLoginProps) {
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [mobileNumber, setMobileNumber] = useState("");
@@ -68,28 +69,6 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
           description: "Account created successfully! Please check your email to confirm your account."
         });
       } else {
-        // Check if trying to login as admin and create admin if doesn't exist
-        if (emailFormData.email === "admin@ecorider.com" && emailFormData.password === "admin1234") {
-          // Try to create admin user first
-          const { error: signUpError } = await supabase.auth.signUp({
-            email: emailFormData.email,
-            password: emailFormData.password,
-            options: {
-              emailRedirectTo: `${window.location.origin}/`,
-              data: {
-                first_name: 'System',
-                last_name: 'Administrator',
-                role: 'admin'
-              }
-            }
-          });
-
-          // If user already exists, that's fine, just sign them in
-          if (signUpError && !signUpError.message.includes("already registered")) {
-            throw signUpError;
-          }
-        }
-
         const { error } = await supabase.auth.signInWithPassword({
           email: emailFormData.email,
           password: emailFormData.password
@@ -177,53 +156,17 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
     }
   };
 
-  const handleAdminLogin = async () => {
-    setLoading(true);
-    try {
-      // Try to create admin user first
-      const { error: signUpError } = await supabase.auth.signUp({
-        email: "admin@ecorider.com",
-        password: "admin1234",
-        options: {
-          emailRedirectTo: `${window.location.origin}/`,
-          data: {
-            first_name: 'System',
-            last_name: 'Administrator',
-            role: 'admin'
-          }
-        }
-      });
-
-      // If user already exists, that's fine, just sign them in
-      if (signUpError && !signUpError.message.includes("already registered")) {
-        throw signUpError;
-      }
-
-      const { error } = await supabase.auth.signInWithPassword({
-        email: "admin@ecorider.com",
-        password: "admin1234"
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Admin signed in successfully!"
-      });
-      onSuccess();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-md">
+      <Button 
+        variant="ghost" 
+        onClick={onBack} 
+        className="mb-6 text-muted-foreground hover:text-foreground"
+      >
+        <ArrowLeft className="h-4 w-4 mr-2" />
+        Back to Login Options
+      </Button>
+
       <Tabs defaultValue="email" className="w-full">
         <TabsList className="grid w-full grid-cols-2 mb-6">
           <TabsTrigger value="email" className="flex items-center gap-2">
@@ -278,18 +221,6 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
                   >
                     {loading ? "Signing In..." : "Sign In"}
                   </Button>
-                  
-                  <div className="pt-4 border-t">
-                    <Button 
-                      onClick={handleAdminLogin} 
-                      variant="outline" 
-                      className="w-full"
-                      disabled={loading}
-                    >
-                      <Lock className="h-4 w-4 mr-2" />
-                      Admin Login
-                    </Button>
-                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
