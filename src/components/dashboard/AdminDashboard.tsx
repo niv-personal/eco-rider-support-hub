@@ -52,17 +52,37 @@ export function AdminDashboard({ user, userProfile, onNavigate }: AdminDashboard
         .from('predefined_qa')
         .select('*', { count: 'exact', head: true });
 
-      // Fetch recent queries
+      // Fetch recent queries with customer information
       const { data: queriesData, error: queriesError } = await supabase
         .from('customer_queries')
         .select(`
-          *,
-          profiles:customer_id (first_name, last_name)
+          id,
+          query_text,
+          response_text,
+          status,
+          created_at,
+          customer_id
         `)
         .order('created_at', { ascending: false })
         .limit(5);
 
-      if (queriesError) throw queriesError;
+      if (queriesError) {
+        console.error('Queries fetch error:', queriesError);
+        throw queriesError;
+      }
+
+      // Fetch customer names separately to avoid join issues
+      const customerIds = [...new Set(queriesData?.map(q => q.customer_id) || [])];
+      const { data: customersData } = await supabase
+        .from('profiles')
+        .select('user_id, first_name, last_name')
+        .in('user_id', customerIds);
+
+      // Combine the data
+      const enrichedQueries = queriesData?.map(query => ({
+        ...query,
+        customer_name: customersData?.find(c => c.user_id === query.customer_id)
+      })) || [];
 
       setStats({
         totalCustomers: customerCount || 0,
@@ -71,7 +91,7 @@ export function AdminDashboard({ user, userProfile, onNavigate }: AdminDashboard
         totalQA: qaCount || 0
       });
 
-      setRecentQueries(queriesData || []);
+      setRecentQueries(enrichedQueries || []);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -263,7 +283,7 @@ export function AdminDashboard({ user, userProfile, onNavigate }: AdminDashboard
                     <div className="flex-1">
                       <p className="font-medium line-clamp-2">{query.query_text}</p>
                       <p className="text-sm text-muted-foreground mt-1">
-                        From: {query.profiles?.first_name} {query.profiles?.last_name}
+                        From: {query.customer_name?.first_name || 'Unknown'} {query.customer_name?.last_name || 'Customer'}
                       </p>
                     </div>
                     <Badge className={getQueryStatusColor(query.status)}>
