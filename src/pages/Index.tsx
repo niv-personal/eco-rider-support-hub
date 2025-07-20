@@ -6,6 +6,7 @@ import { CustomerDashboard } from "@/components/dashboard/CustomerDashboard";
 import { AdminDashboard } from "@/components/dashboard/AdminDashboard";
 import { AddQAComponent } from "@/components/admin/AddQAComponent";
 import { HelpCenter } from "@/components/help/HelpCenter";
+import { ChatInterface } from "@/components/chat/ChatInterface";
 import AuthPage from "./Auth";
 import { useToast } from "@/hooks/use-toast";
 
@@ -168,9 +169,12 @@ const Index = () => {
         )}
         
         {currentView === 'chat' && (
-          <div className="text-center py-12">
-            <h2 className="text-2xl font-bold mb-4">Support Chat</h2>
-            <p className="text-muted-foreground">Chat feature coming soon...</p>
+          <div className="fixed inset-0 z-50">
+            <ChatInterface 
+              user={user} 
+              userProfile={userProfile} 
+              onBack={() => setCurrentView('dashboard')} 
+            />
           </div>
         )}
         
