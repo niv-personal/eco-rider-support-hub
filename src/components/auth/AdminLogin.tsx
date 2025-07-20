@@ -24,7 +24,7 @@ export function AdminLogin({ onSuccess, onBack }: AdminLoginProps) {
     setLoading(true);
     try {
       // Try to create admin user first
-      const { error: signUpError } = await supabase.auth.signUp({
+      const { data, error: signUpError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
@@ -40,6 +40,29 @@ export function AdminLogin({ onSuccess, onBack }: AdminLoginProps) {
       // If user already exists, that's fine, just sign them in
       if (signUpError && !signUpError.message.includes("already registered")) {
         throw signUpError;
+      }
+
+      // Fallback: Create profile manually if trigger failed
+      if (data?.user && !signUpError) {
+        setTimeout(async () => {
+          try {
+            const { error: profileError } = await supabase
+              .from('profiles')
+              .upsert({
+                user_id: data.user.id,
+                first_name: 'System',
+                last_name: 'Administrator',
+                mobile_number: '',
+                role: 'admin'
+              });
+            
+            if (profileError) {
+              console.warn('Admin profile creation fallback failed:', profileError);
+            }
+          } catch (err) {
+            console.warn('Admin profile fallback error:', err);
+          }
+        }, 1000);
       }
 
       const { error } = await supabase.auth.signInWithPassword({
@@ -69,7 +92,7 @@ export function AdminLogin({ onSuccess, onBack }: AdminLoginProps) {
     setLoading(true);
     try {
       // Try to create admin user first
-      const { error: signUpError } = await supabase.auth.signUp({
+      const { data, error: signUpError } = await supabase.auth.signUp({
         email: "admin@ecorider.com",
         password: "admin1234",
         options: {
@@ -85,6 +108,29 @@ export function AdminLogin({ onSuccess, onBack }: AdminLoginProps) {
       // If user already exists, that's fine, just sign them in
       if (signUpError && !signUpError.message.includes("already registered")) {
         throw signUpError;
+      }
+
+      // Fallback: Create profile manually if trigger failed
+      if (data?.user && !signUpError) {
+        setTimeout(async () => {
+          try {
+            const { error: profileError } = await supabase
+              .from('profiles')
+              .upsert({
+                user_id: data.user.id,
+                first_name: 'System',
+                last_name: 'Administrator',
+                mobile_number: '',
+                role: 'admin'
+              });
+            
+            if (profileError) {
+              console.warn('Admin profile creation fallback failed:', profileError);
+            }
+          } catch (err) {
+            console.warn('Admin profile fallback error:', err);
+          }
+        }, 1000);
       }
 
       const { error } = await supabase.auth.signInWithPassword({

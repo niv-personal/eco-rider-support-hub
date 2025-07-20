@@ -48,7 +48,7 @@ export function CustomerLogin({ onSuccess, onBack }: CustomerLoginProps) {
           return;
         }
 
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email: emailFormData.email,
           password: emailFormData.password,
           options: {
@@ -63,6 +63,29 @@ export function CustomerLogin({ onSuccess, onBack }: CustomerLoginProps) {
         });
 
         if (error) throw error;
+
+        // Fallback: Create profile manually if trigger failed
+        if (data.user) {
+          setTimeout(async () => {
+            try {
+              const { error: profileError } = await supabase
+                .from('profiles')
+                .upsert({
+                  user_id: data.user.id,
+                  first_name: emailFormData.firstName || 'User',
+                  last_name: emailFormData.lastName || 'Customer',
+                  mobile_number: emailFormData.mobile || '',
+                  role: 'customer'
+                });
+              
+              if (profileError) {
+                console.warn('Profile creation fallback failed:', profileError);
+              }
+            } catch (err) {
+              console.warn('Profile fallback error:', err);
+            }
+          }, 1000);
+        }
 
         toast({
           title: "Success",
@@ -111,7 +134,7 @@ export function CustomerLogin({ onSuccess, onBack }: CustomerLoginProps) {
           // Create a temporary user account or sign in
           // For demo, we'll create an account with email as mobile@ecorider.com
           const email = `${mobileFormData.mobile}@ecorider.com`;
-          const { error } = await supabase.auth.signUp({
+          const { data, error } = await supabase.auth.signUp({
             email,
             password: `mobile_${mobileFormData.mobile}`, // Auto-generated password
             options: {
