@@ -64,6 +64,37 @@ const Index = () => {
 
       console.log('Profile query result:', { data, error });
 
+      if (error && error.code === 'PGRST116') {
+        // Profile doesn't exist, create it
+        console.log('Profile not found, creating...');
+        const { data: userData } = await supabase.auth.getUser();
+        const user = userData.user;
+        
+        if (user) {
+          const isAdmin = user.email === 'admin@ecorider.com';
+          const { data: newProfile, error: insertError } = await supabase
+            .from('profiles')
+            .insert({
+              user_id: userId,
+              first_name: isAdmin ? 'System' : (user.user_metadata?.first_name || 'User'),
+              last_name: isAdmin ? 'Administrator' : (user.user_metadata?.last_name || 'Customer'),
+              mobile_number: user.user_metadata?.mobile_number || '',
+              role: isAdmin ? 'admin' : 'customer'
+            })
+            .select()
+            .single();
+            
+          if (insertError) {
+            console.error('Error creating profile:', insertError);
+            return;
+          }
+          
+          console.log('Created new profile:', newProfile);
+          setUserProfile(newProfile);
+          return;
+        }
+      }
+
       if (error && error.code !== 'PGRST116') {
         console.error('Error fetching profile:', error);
         return;
