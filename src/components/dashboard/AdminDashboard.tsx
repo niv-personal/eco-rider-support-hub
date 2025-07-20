@@ -24,6 +24,7 @@ export function AdminDashboard({ user, userProfile, onNavigate }: AdminDashboard
   const { toast } = useToast();
 
   useEffect(() => {
+    console.log('AdminDashboard mounted, user:', user?.id, 'userProfile:', userProfile?.role);
     fetchAdminData();
   }, [user]);
 

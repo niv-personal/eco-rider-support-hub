@@ -17,17 +17,22 @@ const Index = () => {
   const { toast } = useToast();
 
   useEffect(() => {
+    console.log('Setting up auth state listener...');
+    
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.email);
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
+          console.log('User found, fetching profile for:', session.user.id);
           setTimeout(() => {
             fetchUserProfile(session.user.id);
           }, 0);
         } else {
+          console.log('No user, clearing profile');
           setUserProfile(null);
         }
       }
@@ -35,9 +40,11 @@ const Index = () => {
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session check:', session?.user?.email);
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
+        console.log('Initial profile fetch for:', session.user.id);
         fetchUserProfile(session.user.id);
       }
       setLoading(false);
@@ -47,6 +54,7 @@ const Index = () => {
   }, []);
 
   const fetchUserProfile = async (userId: string) => {
+    console.log('fetchUserProfile called for userId:', userId);
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -54,11 +62,14 @@ const Index = () => {
         .eq('user_id', userId)
         .single();
 
+      console.log('Profile query result:', { data, error });
+
       if (error && error.code !== 'PGRST116') {
         console.error('Error fetching profile:', error);
         return;
       }
 
+      console.log('Setting user profile:', data);
       setUserProfile(data);
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -81,7 +92,10 @@ const Index = () => {
     );
   }
 
+  console.log('Render state:', { user: !!user, session: !!session, userProfile, loading });
+
   if (!user || !session) {
+    console.log('Showing auth page - user:', !!user, 'session:', !!session);
     return <AuthPage onSuccess={handleAuthSuccess} />;
   }
 
