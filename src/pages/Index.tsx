@@ -3,6 +3,8 @@ import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigation } from "@/components/layout/Navigation";
 import { CustomerDashboard } from "@/components/dashboard/CustomerDashboard";
+import { AdminDashboard } from "@/components/dashboard/AdminDashboard";
+import { AddQAComponent } from "@/components/admin/AddQAComponent";
 import AuthPage from "./Auth";
 import { useToast } from "@/hooks/use-toast";
 
@@ -92,12 +94,31 @@ const Index = () => {
       />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {currentView === 'dashboard' && (
+        {currentView === 'dashboard' && userProfile?.role === 'admin' && (
+          <AdminDashboard 
+            user={user} 
+            userProfile={userProfile} 
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {currentView === 'dashboard' && userProfile?.role === 'customer' && (
           <CustomerDashboard 
             user={user} 
             userProfile={userProfile} 
             onNavigate={handleNavigate}
           />
+        )}
+
+        {currentView === 'dashboard' && !userProfile && (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading your dashboard...</p>
+          </div>
+        )}
+        
+        {currentView === 'add-qa' && userProfile?.role === 'admin' && (
+          <AddQAComponent onBack={() => setCurrentView('dashboard')} />
         )}
         
         {currentView === 'chat' && (
