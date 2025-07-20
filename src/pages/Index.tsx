@@ -5,6 +5,7 @@ import { Navigation } from "@/components/layout/Navigation";
 import { CustomerDashboard } from "@/components/dashboard/CustomerDashboard";
 import { AdminDashboard } from "@/components/dashboard/AdminDashboard";
 import { AddQAComponent } from "@/components/admin/AddQAComponent";
+import { ManageQAComponent } from "@/components/admin/ManageQAComponent";
 import { HelpCenter } from "@/components/help/HelpCenter";
 import { ChatInterface } from "@/components/chat/ChatInterface";
 import AuthPage from "./Auth";
@@ -166,6 +167,10 @@ const Index = () => {
         
         {currentView === 'add-qa' && userProfile?.role === 'admin' && (
           <AddQAComponent onBack={() => setCurrentView('dashboard')} />
+        )}
+        
+        {currentView === 'manage-qa' && userProfile?.role === 'admin' && (
+          <ManageQAComponent onBack={() => setCurrentView('dashboard')} />
         )}
         
         {currentView === 'chat' && (

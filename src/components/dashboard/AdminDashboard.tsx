@@ -15,7 +15,6 @@ interface AdminDashboardProps {
 export function AdminDashboard({ user, userProfile, onNavigate }: AdminDashboardProps) {
   const [stats, setStats] = useState({
     totalCustomers: 0,
-    totalOrders: 0,
     openQueries: 0,
     totalQA: 0
   });
@@ -36,10 +35,6 @@ export function AdminDashboard({ user, userProfile, onNavigate }: AdminDashboard
         .select('*', { count: 'exact', head: true })
         .eq('role', 'customer');
 
-      // Fetch orders count
-      const { count: ordersCount } = await supabase
-        .from('orders')
-        .select('*', { count: 'exact', head: true });
 
       // Fetch open queries count
       const { count: openQueriesCount } = await supabase
@@ -86,7 +81,6 @@ export function AdminDashboard({ user, userProfile, onNavigate }: AdminDashboard
 
       setStats({
         totalCustomers: customerCount || 0,
-        totalOrders: ordersCount || 0,
         openQueries: openQueriesCount || 0,
         totalQA: qaCount || 0
       });
@@ -160,7 +154,7 @@ export function AdminDashboard({ user, userProfile, onNavigate }: AdminDashboard
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 md:grid-cols-3">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
@@ -175,19 +169,6 @@ export function AdminDashboard({ user, userProfile, onNavigate }: AdminDashboard
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-secondary/10 rounded-lg">
-                <BarChart3 className="h-6 w-6 text-secondary" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{stats.totalOrders}</p>
-                <p className="text-sm text-muted-foreground">Total Orders</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         <Card>
           <CardContent className="p-6">
