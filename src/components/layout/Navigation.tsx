@@ -122,10 +122,26 @@ export function Navigation({ user, userProfile, onNavigate }: NavigationProps) {
                   <span>Dashboard</span>
                 </DropdownMenuItem>
                 
-                <DropdownMenuItem onClick={() => onNavigate('chat')}>
-                  <MessageCircle className="mr-2 h-4 w-4" />
-                  <span>Support Chat</span>
-                </DropdownMenuItem>
+                {!isAdmin && (
+                  <DropdownMenuItem onClick={() => onNavigate('chat')}>
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    <span>Support Chat</span>
+                  </DropdownMenuItem>
+                )}
+                
+                {isAdmin && (
+                  <>
+                    <DropdownMenuItem onClick={() => onNavigate('add-qa')}>
+                      <FileText className="mr-2 h-4 w-4" />
+                      <span>Add Q&A</span>
+                    </DropdownMenuItem>
+                    
+                    <DropdownMenuItem onClick={() => onNavigate('manage-queries')}>
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Manage Queries</span>
+                    </DropdownMenuItem>
+                  </>
+                )}
                 
                 {!isAdmin && (
                   <>

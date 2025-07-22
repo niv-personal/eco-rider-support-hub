@@ -342,11 +342,16 @@ export function ChatInterface({ user, userProfile, onBack }: ChatInterfaceProps)
               <div>
                 <h3 className="text-xl font-semibold mb-2">Welcome to Eco Rider Support</h3>
                 <p className="text-muted-foreground mb-4">
-                  Start a new conversation to get help with your scooter
+                  {conversations.length === 0 
+                    ? "Start a new conversation to get help with your scooter"
+                    : "Select a conversation from the sidebar or start a new one"
+                  }
                 </p>
-                <Button onClick={createNewConversation}>
-                  Start Your First Chat
-                </Button>
+                {conversations.length === 0 && (
+                  <Button onClick={createNewConversation}>
+                    Start Your First Chat
+                  </Button>
+                )}
               </div>
             </div>
           </div>
