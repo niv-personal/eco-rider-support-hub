@@ -138,20 +138,14 @@ export function Navigation({ user, userProfile, onNavigate }: NavigationProps) {
                       <FileText className="mr-2 h-4 w-4" />
                       <span>My Queries</span>
                     </DropdownMenuItem>
+                    
+                    <DropdownMenuItem onClick={() => onNavigate('help')}>
+                      <HelpCircle className="mr-2 h-4 w-4" />
+                      <span>Help Center</span>
+                    </DropdownMenuItem>
                   </>
                 )}
                 
-                {isAdmin && (
-                  <DropdownMenuItem onClick={() => onNavigate('admin')}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Admin Panel</span>
-                  </DropdownMenuItem>
-                )}
-                
-                <DropdownMenuItem onClick={() => onNavigate('help')}>
-                  <HelpCircle className="mr-2 h-4 w-4" />
-                  <span>Help Center</span>
-                </DropdownMenuItem>
                 
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>

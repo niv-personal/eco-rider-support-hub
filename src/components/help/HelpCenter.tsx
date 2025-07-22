@@ -360,12 +360,12 @@ export function HelpCenter({ onBack }: HelpCenterProps) {
       {/* Contact Support */}
       <Card className="bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20">
         <CardContent className="p-6 text-center">
-          <h3 className="font-semibold mb-2">Can't find what you're looking for?</h3>
+          <h3 className="font-semibold mb-2">Still need help?</h3>
           <p className="text-muted-foreground mb-4">
-            Contact our support team for personalized help
+            Submit a support query and our team will get back to you
           </p>
           <Button onClick={() => onBack()}>
-            Start Live Chat
+            Submit Support Query
           </Button>
         </CardContent>
       </Card>
