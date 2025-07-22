@@ -6,10 +6,12 @@ import { CustomerDashboard } from "@/components/dashboard/CustomerDashboard";
 import { AdminDashboard } from "@/components/dashboard/AdminDashboard";
 import { AddQAComponent } from "@/components/admin/AddQAComponent";
 import { ManageQAComponent } from "@/components/admin/ManageQAComponent";
+import { ManageQueriesComponent } from "@/components/admin/ManageQueriesComponent";
 import { HelpCenter } from "@/components/help/HelpCenter";
 import { ChatInterface } from "@/components/chat/ChatInterface";
 import { SubmitQueryComponent } from "@/components/queries/SubmitQueryComponent";
 import { ViewQueriesComponent } from "@/components/queries/ViewQueriesComponent";
+import { OrdersComponent } from "@/components/orders/OrdersComponent";
 import AuthPage from "./Auth";
 import { useToast } from "@/hooks/use-toast";
 
@@ -175,6 +177,10 @@ const Index = () => {
           <ManageQAComponent onBack={() => setCurrentView('dashboard')} />
         )}
         
+        {currentView === 'manage-queries' && userProfile?.role === 'admin' && (
+          <ManageQueriesComponent onBack={() => setCurrentView('dashboard')} />
+        )}
+        
         {currentView === 'chat' && (
           <div className="fixed inset-0 z-50">
             <ChatInterface 
@@ -186,10 +192,10 @@ const Index = () => {
         )}
         
         {currentView === 'orders' && (
-          <div className="text-center py-12">
-            <h2 className="text-2xl font-bold mb-4">My Orders</h2>
-            <p className="text-muted-foreground">Orders view coming soon...</p>
-          </div>
+          <OrdersComponent 
+            user={user} 
+            onBack={() => setCurrentView('dashboard')} 
+          />
         )}
         
         {currentView === 'submit-query' && (
