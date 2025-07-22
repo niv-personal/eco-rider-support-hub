@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Package, Calendar, DollarSign, Truck } from "lucide-react";
+import { ArrowLeft, Package, Calendar, DollarSign, Truck, Zap } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -71,7 +71,7 @@ export function OrdersComponent({ user, onBack }: OrdersComponentProps) {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'delivered':
-        return <Package className="h-4 w-4 text-green-500" />;
+        return <Zap className="h-4 w-4 text-green-500" />;
       case 'shipped':
         return <Truck className="h-4 w-4 text-blue-500" />;
       case 'pending':
@@ -111,10 +111,10 @@ export function OrdersComponent({ user, onBack }: OrdersComponentProps) {
 
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <Package className="h-6 w-6 text-primary" />
+          <Zap className="h-6 w-6 text-primary" />
           <div>
-            <h1 className="text-2xl font-bold">My Orders</h1>
-            <p className="text-muted-foreground">Track your orders and delivery status</p>
+            <h1 className="text-2xl font-bold">My Scooter Orders</h1>
+            <p className="text-muted-foreground">Track your electric scooter orders and delivery status</p>
           </div>
         </div>
       </div>
@@ -122,10 +122,10 @@ export function OrdersComponent({ user, onBack }: OrdersComponentProps) {
       {orders.length === 0 ? (
         <Card>
           <CardContent className="p-12 text-center">
-            <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No orders yet</h3>
+            <Zap className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">No scooter orders yet</h3>
             <p className="text-muted-foreground">
-              Your order history will appear here once you make your first purchase
+              Your electric scooter order history will appear here once you make your first purchase
             </p>
           </CardContent>
         </Card>
